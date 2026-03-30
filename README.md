@@ -6,8 +6,9 @@
 
 ## 📰 当前页面
 
-- **HTML 版本:** https://raw.githubusercontent.com/shi8103312/ai-daily-news/master/news.html
-- **Markdown 版本:** https://raw.githubusercontent.com/shi8103312/ai-daily-news/master/news-2026-03-24.md
+- **GitHub Pages:** https://shi8103312.github.io/ai-daily-news/ ✅
+- **HTML 版本:** https://raw.githubusercontent.com/shi8103312/ai-daily-news/main/news.html
+- **Markdown 版本:** https://raw.githubusercontent.com/shi8103312/ai-daily-news/main/news-2026-03-24.md
 
 ---
 
