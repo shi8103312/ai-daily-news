@@ -1,0 +1,62 @@
+name: Daily News Publish
+
+on:
+  schedule:
+    - cron: '30 0 * * *'  # 每天北京时间 08:30 (UTC 00:30 = 北京 08:30)
+  workflow_dispatch:  # 允许手动触发
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Workspace
+        uses: actions/checkout@v4
+        with:
+          repository: shi8103312/ai-daily-news
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: workspace
+
+      - name: Setup PowerShell
+        uses: actions/setup-powershell@v2
+        with:
+          version: '7.x'
+
+      - name: Run Publish Script
+        run: |
+          cd workspace/.openclaw/workspace
+          pwsh -ExecutionPolicy Bypass -File scripts/publish-daily-news.ps1
+          
+          # Commit and push to main branch
+          git add .
+          git config user.name "Tiara"
+          git config user.email "tiara@openclaw.ai"
+          git commit -m "Daily news update: ${{ github.event.schedule }}" || echo "No changes"
+          git push origin main
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./workspace/.openclaw/workspace/github-pages
+
+  deploy:
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
